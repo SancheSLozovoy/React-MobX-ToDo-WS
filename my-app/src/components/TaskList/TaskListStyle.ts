@@ -25,6 +25,7 @@ export const ButtonContainer = styled.div`
     margin-bottom: 20px;
 
     > button {
+        background-color: grey;
         padding: 10px 20px;
         font-size: 16px;
         border-radius: 20px;
