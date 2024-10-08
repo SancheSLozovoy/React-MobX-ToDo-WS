@@ -41,12 +41,20 @@ class TaskStore {
         }
     }
 
-    markAllTasks(userId: number | null) {
-        this.tasks.forEach(task => {
-            if (task.userId === userId) {
-                task.completed = true;
-            }
-        })
+    async markAllTasks(userId: number | null) {
+        const someTask = this.tasks.some(task => task.userId === userId && !task.completed);
+
+        const updateTaskId =
+            this.tasks.filter(task => task.userId === userId)
+                .map(task => {
+                    const updateCompleted = someTask
+                    return this.updateTask(task.id, task.title, updateCompleted, task.userId);
+                }
+                )
+
+        Promise.all(updateTaskId)
+
+
     }
 
     async deleteCompleted() {
@@ -59,7 +67,7 @@ class TaskStore {
         }
     }
 
-    get filterTask () {
+    get filterTask() {
         return this.selectedUserId === null ? this.tasks : this.tasks.filter(task => task.userId === this.selectedUserId)
     }
 

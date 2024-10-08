@@ -32,6 +32,7 @@ export const TaskTitle = styled.span<{ completed: boolean }>`
     margin-right: auto;
     ${({ completed }) => completed && `
         color: rgb(12, 140, 12);
+        text-decoration: line-through;
     `}
 `;
 
