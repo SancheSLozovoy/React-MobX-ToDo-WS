@@ -10,7 +10,7 @@ const Task: React.FC<TaskProps> = ({ id, title, completed, onToggle, onDelete, o
 
     const handleEdit = (newTitle: string) => {
         onEdit(id, newTitle)
-        setIsEditing(!false)
+        setIsEditing(false)
     };
 
     const handleToggle = async () => {
