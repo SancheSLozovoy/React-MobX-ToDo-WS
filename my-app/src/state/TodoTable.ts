@@ -76,7 +76,7 @@ class TodoTable {
     setSelectedUserId(userId: number | null) {
         this.selectedUserId = userId;
     }
-
+    
 }
 
-export const taskStore = new TodoTable();
+export default TodoTable

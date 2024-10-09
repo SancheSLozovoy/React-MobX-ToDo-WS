@@ -1,42 +1,37 @@
-import React, { useEffect, useRef } from 'react';
+import React, { useRef } from 'react';
 import { observer } from 'mobx-react-lite';
 import Task from '../Task/Task';
 import UserSelect from '../TaskSelectUser/TaskSelectUser';
 import { TasksContainer, TasksList, ListTitle, ButtonContainer, AddTask, AddTaskContainer } from './TaskListStyle';
-import { taskStore } from '../../state/TodoTable';
+import TodoTable from '../../state/TodoTable';
+import { useTodoTable } from '../../service/useTodoTable';
 
 const TaskList: React.FC = () => {
-    useEffect(() => {
-        taskStore.loadTasks();
-    }, []);
+    const inputRef = useRef<HTMLInputElement>(null)
 
-    const inputRef = useRef<HTMLInputElement>(null);
+    const todoTable = useTodoTable();
 
     const handleAddTask = () => {
         const titleToAdd = inputRef.current?.value;
         if (titleToAdd) {
-            const userId = taskStore.selectedUserId || 1;
-            taskStore.addTask(titleToAdd, userId);
+            const userId = todoTable.selectedUserId || 1;
+            todoTable.addTask(titleToAdd, userId);
             if(inputRef.current){
                 inputRef.current.value = '';
             }
         }
     };
 
-    const deleteMarks = async () => {
-        await taskStore.deleteCompleted();
-    };
-
     return (
         <TasksContainer>
             <ListTitle>Tasks List</ListTitle>
             <ButtonContainer>
-                <button onClick={() => taskStore.markAllTasks(taskStore.selectedUserId)}>Mark All</button>
-                <button onClick={deleteMarks}>Delete Completed</button>
+                <button onClick={() => todoTable.markAllTasks(todoTable.selectedUserId)}>Mark All</button>
+                <button onClick={() => todoTable.deleteCompleted()}>Delete Completed</button>
                 <UserSelect
-                    userIds={Array.from(new Set(taskStore.tasks.map(task => task.userId)))}
-                    selectedUserId={taskStore.selectedUserId}
-                    onUserChange={(userId) => taskStore.setSelectedUserId(userId)}
+                    userIds={Array.from(new Set(todoTable.tasks.map(task => task.userId)))}
+                    selectedUserId={todoTable.selectedUserId}
+                    onUserChange={(userId) => todoTable.setSelectedUserId(userId)}
                 />
             </ButtonContainer>
             <AddTaskContainer>
@@ -44,13 +39,13 @@ const TaskList: React.FC = () => {
                 <button onClick={handleAddTask}>Add Task</button>
             </AddTaskContainer>
             <TasksList>
-                {taskStore.filterTask.map(task => (
+                {todoTable.filterTask.map(task => (
                     <Task
                         key={task.id}
                         {...task}
-                        onToggle={() => taskStore.toggleTask(task.id)}
-                        onEdit={(id, newTitle) => taskStore.updateTask(id, newTitle, task.completed, task.userId)}
-                        onDelete={() => taskStore.deleteTask(task.id)}
+                        onToggle={() => todoTable.toggleTask(task.id)}
+                        onEdit={(id, newTitle) => todoTable.updateTask(id, newTitle, task.completed, task.userId)}
+                        onDelete={() => todoTable.deleteTask(task.id)}
                     />
                 ))}
             </TasksList>
