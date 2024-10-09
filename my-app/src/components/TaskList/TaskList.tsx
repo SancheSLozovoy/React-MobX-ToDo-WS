@@ -5,6 +5,7 @@ import UserSelect from '../TaskSelectUser/TaskSelectUser';
 import { TasksContainer, TasksList, ListTitle, ButtonContainer, AddTask, AddTaskContainer } from './TaskListStyle';
 import { taskStore } from '../../state/store';
 
+
 const TaskList: React.FC = () => {
     useEffect(() => {
         taskStore.loadTasks();
@@ -38,7 +39,6 @@ const TaskList: React.FC = () => {
                     selectedUserId={taskStore.selectedUserId}
                     onUserChange={(userId) => taskStore.setSelectedUserId(userId)}
                 />
-
             </ButtonContainer>
             <AddTaskContainer>
                 <AddTask type="text" ref={inputRef} placeholder='Enter task'/>
