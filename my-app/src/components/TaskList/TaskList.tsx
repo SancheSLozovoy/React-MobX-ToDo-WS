@@ -5,7 +5,6 @@ import UserSelect from '../TaskSelectUser/TaskSelectUser';
 import { TasksContainer, TasksList, ListTitle, ButtonContainer, AddTask, AddTaskContainer } from './TaskListStyle';
 import { taskStore } from '../../state/store';
 
-
 const TaskList: React.FC = () => {
     useEffect(() => {
         taskStore.loadTasks();

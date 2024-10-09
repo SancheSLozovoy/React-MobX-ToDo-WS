@@ -42,20 +42,22 @@ class TaskStore {
     }
 
     async markAllTasks(userId: number | null) {
-        const someTask = this.tasks.some(task => task.userId === userId && !task.completed);
-
-        const updateTaskId =
-            this.tasks.filter(task => task.userId === userId)
-                .map(task => {
-                    const updateCompleted = someTask
-                    return this.updateTask(task.id, task.title, updateCompleted, task.userId);
-                }
-                )
-
-        Promise.all(updateTaskId)
-
-
+        const someTask = userId === null 
+            ? this.tasks.some(task => !task.completed) 
+            : this.tasks.some(task => task.userId === userId && !task.completed); 
+    
+        const tasksToUpdate = userId === null 
+            ? this.tasks 
+            : this.tasks.filter(task => task.userId === userId);
+    
+        const updateTaskPromises = tasksToUpdate.map(task => {
+            const updateCompleted = someTask; 
+            return this.updateTask(task.id, task.title, updateCompleted, task.userId);
+        });
+    
+        await Promise.all(updateTaskPromises); 
     }
+    
 
     async deleteCompleted() {
         const tasksToDelete = this.tasks.filter(task => task.completed && (!this.selectedUserId || task.userId === this.selectedUserId));
