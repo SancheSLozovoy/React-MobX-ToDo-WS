@@ -3,7 +3,7 @@ import { TaskService } from "../service/TaskService";
 import { makeAutoObservable } from "mobx";
 
 
-class TaskStore {
+class TodoTable {
     tasks: TaskProps[] = [];
     selectedUserId: number | null = null;
 
@@ -79,4 +79,4 @@ class TaskStore {
 
 }
 
-export const taskStore = new TaskStore();
+export const taskStore = new TodoTable();
