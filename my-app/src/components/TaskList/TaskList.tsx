@@ -3,7 +3,6 @@ import { observer } from 'mobx-react-lite';
 import Task from '../Task/Task';
 import UserSelect from '../TaskSelectUser/TaskSelectUser';
 import { TasksContainer, TasksList, ListTitle, ButtonContainer, AddTask, AddTaskContainer } from './TaskListStyle';
-import TodoTable from '../../state/TodoTable';
 import { useTodoTable } from '../../service/useTodoTable';
 
 const TaskList: React.FC = () => {

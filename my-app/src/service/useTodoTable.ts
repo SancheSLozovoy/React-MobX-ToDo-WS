@@ -1,4 +1,4 @@
-import React, { useContext, createContext } from "react";
+import { useContext, createContext } from "react";
 import TodoTable from "../state/TodoTable";
 
 export const TodoContext = createContext<TodoTable | undefined>(undefined)
