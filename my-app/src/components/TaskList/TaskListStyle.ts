@@ -25,6 +25,7 @@ export const ButtonContainer = styled.div`
     margin-bottom: 20px;
 
     > button {
+        background-color: grey;
         padding: 10px 20px;
         font-size: 16px;
         border-radius: 20px;
@@ -55,5 +56,33 @@ export const TasksList = styled.ul`
     
     > * {
         margin-bottom: 10px;
+    }
+`
+
+export const AddTask = styled.input`
+    border-radius: 20px;
+    height: 40px;
+    padding-left: 10px;
+`
+
+export const AddTaskContainer = styled.button`
+    display: flex;
+    background: none;
+    border: none;
+
+    > button {
+        background-color: grey;
+        padding: 10px 20px;
+        font-size: 16px;
+        border-radius: 20px;
+        border: none;
+        color: white;
+        cursor: pointer;
+        transition: background-color 0.3s ease;
+        margin-left: 10px;
+
+        &:hover {
+            background-color: rgba(12, 140, 12, 0.8);
+        }
     }
 `

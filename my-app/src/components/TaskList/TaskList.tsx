@@ -1,71 +1,55 @@
-import React, { useEffect, useState } from 'react';
+import React, { useRef } from 'react';
+import { observer } from 'mobx-react-lite';
 import Task from '../Task/Task';
-import './TaskList.css';
 import UserSelect from '../TaskSelectUser/TaskSelectUser';
-import { TasksContainer, TasksList, ListTitle, ButtonContainer } from './TaskListStyle';
-import { useDispatch, useSelector } from 'react-redux';
-import { RootState, AppDispatch } from '../../state/store';
-import { loadTasks, markAllTasks, toggleTask, addTask as addTaskAction, deleteTask, updateTask } from '../../state/todoSlice';
+import { TasksContainer, TasksList, ListTitle, ButtonContainer, AddTask, AddTaskContainer } from './TaskListStyle';
+import { useTodoTable } from '../../service/useTodoTable';
 
 const TaskList: React.FC = () => {
-    const dispatch: AppDispatch = useDispatch(); 
-    const tasks = useSelector((state: RootState) => state.tasks);
-    const [selectedUserId, setSelectedUserId] = useState<number | null>(null);
-    const [filterTasks, setFilterTasks] = useState(tasks);
+    const inputRef = useRef<HTMLInputElement>(null)
 
-    useEffect(() => {
-        dispatch(loadTasks());
-    }, [dispatch]);
-
-    useEffect(() => {
-        if (selectedUserId === null) {
-            setFilterTasks(tasks);
-        } else {
-            setFilterTasks(tasks.filter(task => task.userId === selectedUserId));
-        }
-    }, [tasks, selectedUserId]);
+    const todoTable = useTodoTable();
 
     const handleAddTask = () => {
-        const title = prompt('Enter a task title');
-        if (title) {
-            const userId = selectedUserId || 1;
-            dispatch(addTaskAction({ title, userId }));
+        const titleToAdd = inputRef.current?.value;
+        if (titleToAdd) {
+            const userId = todoTable.selectedUserId || 1;
+            todoTable.addTask(titleToAdd, userId);
+            if(inputRef.current){
+                inputRef.current.value = '';
+            }
         }
     };
-
-    const deleteMarks = async () => {
-        const tasksToDelete = tasks.filter(task => task.completed && (!selectedUserId || task.userId === selectedUserId));
-        try {
-            await Promise.all(tasksToDelete.map(task => dispatch(deleteTask({id : task.id}))));
-            
-        } catch (error) {
-            console.error('Error deleting tasks', error);
-        }
-    };
-    
 
     return (
         <TasksContainer>
             <ListTitle>Tasks List</ListTitle>
             <ButtonContainer>
-                <button onClick={handleAddTask}>Add Task</button>
-                <button onClick={() => dispatch(markAllTasks(selectedUserId))}>Mark All</button>
-                <button onClick={() => dispatch(() => deleteMarks())}>Delete Completed</button>
-                <UserSelect userIds={Array.from(new Set(tasks.map(task => task.userId)))} 
-                selectedUserId={selectedUserId} 
-                onUserChange={setSelectedUserId} />
+                <button onClick={() => todoTable.markAllTasks(todoTable.selectedUserId)}>Mark All</button>
+                <button onClick={() => todoTable.deleteCompleted()}>Delete Completed</button>
+                <UserSelect
+                    userIds={Array.from(new Set(todoTable.tasks.map(task => task.userId)))}
+                    selectedUserId={todoTable.selectedUserId}
+                    onUserChange={(userId) => todoTable.setSelectedUserId(userId)}
+                />
             </ButtonContainer>
+            <AddTaskContainer>
+                <AddTask type="text" ref={inputRef} placeholder='Enter task'/>
+                <button onClick={handleAddTask}>Add Task</button>
+            </AddTaskContainer>
             <TasksList>
-                {filterTasks.map(task => (
-                    <Task key={task.id} 
-                    {...task} 
-                    onToggle={() => dispatch(toggleTask(task.id))} 
-                    onEdit={(id, newTitle) => dispatch(updateTask({id, title : newTitle, userId: task.userId, completed: task.completed}))}
-                    onDelete={() => dispatch(deleteTask({id : task.id}))} />
+                {todoTable.filterTask.map(task => (
+                    <Task
+                        key={task.id}
+                        {...task}
+                        onToggle={() => todoTable.toggleTask(task.id)}
+                        onEdit={(id, newTitle) => todoTable.updateTask(id, newTitle, task.completed, task.userId)}
+                        onDelete={() => todoTable.deleteTask(task.id)}
+                    />
                 ))}
             </TasksList>
         </TasksContainer>
     );
 };
 
-export default TaskList;
+export default observer(TaskList);

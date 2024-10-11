@@ -1,6 +1,6 @@
 import { BASE_URL } from "./Base.url";
 
-export class TaskService{
+export class TaskService {
 
     static loadTasks = async () => {
         const response = await fetch(BASE_URL, {
@@ -8,12 +8,12 @@ export class TaskService{
         });
         if (!response.ok) {
             throw new Error('Failed to fetch tasks');
-    
+
         }
         return response.json();
-        
+
     };
-    
+
     static deleteTask = async (id: number) => {
         const response = await fetch(`${BASE_URL}/${id}`, {
             method: 'DELETE',
@@ -23,7 +23,7 @@ export class TaskService{
             throw new Error('Failed to delete task');
         }
 
-        return response.status === 204; 
+        return response.status === 204;
     };
 
     static addTask = async (title: string, userId: number) => {
@@ -43,10 +43,10 @@ export class TaskService{
             throw new Error('Failed to add task');
         }
 
-        return response.json(); 
+        return response.json();
     };
 
-    static updateTask = async(id:number, title: string, completed: boolean, userId: number) =>{
+    static updateTask = async (id: number, title: string, completed: boolean, userId: number) => {
         const response = await fetch(`${BASE_URL}/${id}`, {
             method: "PUT",
             body: JSON.stringify({
@@ -60,7 +60,7 @@ export class TaskService{
             },
         });
 
-        if(!response.ok){
+        if (!response.ok) {
             throw new Error("Failed to update task");
         }
 

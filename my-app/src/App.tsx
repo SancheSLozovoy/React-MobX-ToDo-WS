@@ -1,14 +1,13 @@
 import React from 'react';
 import './assets/css/App.css';
 import TaskList from './components/TaskList/TaskList';
+import TodoTableProvider from './components/TodoTableProvider/TodoTableProvider';
 
-
-export default  function App() {
+export default function App() {
   return (
-    <div className="App">
-      <header className="App-header">
-        <TaskList/>
-      </header>
-    </div>
+    <TodoTableProvider>
+      <TaskList />
+    </TodoTableProvider>
+
   );
 }
